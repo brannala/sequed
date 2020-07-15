@@ -5,11 +5,10 @@ Because of limits on the size of buffer emacs easily handles I would not recomme
 option to export an alignment in a simple format used by the phylogenetics program BPP.
 If you use use-package to manage emacs packages (highly recommended) add this content:
  
- (use-package sequed
-  :ensure t
+ `(use-package sequed
   :load-path "~/.emacs.d/lisp/"
   :mode (("\\.fas\\'" . sequed-mode)
 	 ("\\.fa\\'" . sequed-mode)
-	 ("\\.aln\\'" . sequed-mode)))
+	 ("\\.aln\\'" . sequed-mode)))`
 
 This will cause sequed mode to be invoked in any buffer created for files with the endings .fas .fa or .aln. If you have issues let me know.
