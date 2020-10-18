@@ -1,5 +1,8 @@
 
 
+
+(add-to-list 'auto-mode-alist '("\\.fa\\'" . sequed-mode) '("\\.aln\\'" . sequed-mode) '("\\.fas\\'" . sequed-mode))
+
 (defconst sequed-mode-syntax-table
   (let ((table (make-syntax-table)))
     ;;  ; is a comment starter
