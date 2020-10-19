@@ -1,9 +1,9 @@
-;;; sequed.el --- Major mode for viewing/editing FASTA format DNA sequence data and alignments
+;;; sequed.el --- Major mode for FASTA format DNA sequences and alignments
 
 ;; Author: Bruce Rannala
 ;; URL: https://github.com/brannala/sequed
 ;; Version: 0.1.0
-;; Package-Requires: ((emacs "24.3"))
+;; Package-Requires: ((emacs "24.4"))
 ;; License: GNU General Public License Version 3
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -19,19 +19,20 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-;; Commentary:
-;;
+;;; Commentary:
+
 ;; Major mode for editing DNA sequence data in FASTA format and viewing multiple sequence alignments.
-;;
+
 ;; Usage:
 ;;
 ;; M-x sequed-mode to invoke. Automatically invoked as major mode for .fa and .aln files.
-;; Commands in sequed-mode major mode:
+;; Sequed-mode major mode:
 ;; M-x sequed-export [C-c C-e] -> export to new buffer in BPP format
 ;; M-x sequed-mkaln [C-c C-a] -> create an alignment view in read-only buffer in sequed-aln-mode
-;; Commands in sequed-aln-mode major mode:
-;; M-x sequed-aln-gotobase [] -> prompt for base number to move cursor to that column in alignment
-;; M-x sequed-aln-seqfeatures [] -> print number of sequences and number of sites
+;; sequed-aln-mode major mode:
+;; M-x sequed-aln-gotobase [C-c C-b] -> prompt for base number to move cursor to that column in alignment
+;; M-x sequed-aln-seqfeatures [C-c C-f] -> print number of sequences and number of sites
+
 ;;; Code:
 
 (add-to-list 'auto-mode-alist '("\\.fa\\'" . sequed-mode) '("\\.aln\\'" . sequed-mode))
@@ -48,7 +49,7 @@
       '(("^[^>]\\([a-zA-Z- ]+\\)" . font-lock-string-face)
 	("^>.+\n" . font-lock-constant-face)))
 
-(defvar sequed-mode-map nil "Keymap for sequed-mode")
+(defvar sequed-mode-map nil "Keymap for `sequed-mode'.")
 
 (if sequed-mode-map
   () ; Do not change the keymap if it's already set up
@@ -79,10 +80,9 @@
   (font-lock-fontify-buffer)
   (setq-local comment-start "; ")
   (setq-local comment-end "")
-  (provide 'sequed-mode)
-  )
+  (provide 'sequed))
 
-(defvar sequed-aln-mode-map nil "Keymap for sequed-aln-mode")
+(defvar sequed-aln-mode-map nil "Keymap for `sequed-aln-mode'.")
 
 (if sequed-aln-mode-map
   () ; Do not change the keymap if it's already set up
@@ -108,8 +108,7 @@
       '("Move to base" . sequed-aln-gotobase))
     (define-key menuMap [features]
       '("Sequence features" . sequed-aln-seqfeatures)))
-  (font-lock-fontify-buffer)
-  )
+  (font-lock-fontify-buffer))
 
 (defun sequed-check-fasta ()
   "Check if file is in fasta format."
@@ -117,18 +116,17 @@
     (goto-char (point-min))
     (if (re-search-forward "^\\(>\\).+\n[a-z\-]+" nil t) t nil)))
 
-(defun remove-fasta-comments ()
-  "Remove comments from current buffer"
+(defun sequed-remove-fasta-comments ()
+  "Remove comments from current buffer."
   (goto-char (point-min))
   (let (kill-ring)
-    (comment-kill (count-lines (point-min) (point-max))))
-  )
+    (comment-kill (count-lines (point-min) (point-max)))))
 
 ;; Create a read-only buffer with pretty alignment displayed
 (defun sequed-mkaln ()
   "Create read-only buffer for alignment viewing."
   (interactive)
-  (if (eq (sequed-check-fasta) nil) (error "Not a fasta file!"))	
+  (if (eq (sequed-check-fasta) nil) (error "Not a fasta file!"))
   (let (f-buffer f-lines f-seqcount f-linenum f-labels f-pos f-concatlines
 		 elabels (buf (get-buffer-create "*Alignment Viewer*")) text
 		 (inhibit-read-only t) (oldbuf (current-buffer)))
@@ -136,7 +134,7 @@
       (insert-buffer-substring oldbuf)
       (setq-local comment-start "; ")
       (setq-local comment-end "")
-      (remove-fasta-comments)
+      (sequed-remove-fasta-comments)
       (setq f-buffer (buffer-substring-no-properties (point-min) (point-max))))
     (goto-char (point-min))
     (setq f-pos 0)
@@ -168,14 +166,13 @@
     (sequed-color-bases)
     (sequed-color-labels)
     (read-only-mode))
-    (display-buffer buf)
-    ))
+    (display-buffer buf)))
 
 (defun sequed-aln-gotobase (position)
-  "Move to base at position in sequence that cursor is positioned in."
+  "Move to base at POSITION in sequence that cursor is positioned in."
   (interactive "nPosition of base: ")
 ;  (print ( concat "Sequence length: " 'seq-length))
-  (if (or (< position 1) (> position seq-length)) (error "Attempt to move to base outside sequence."))
+  (if (or (< position 1) (> position seq-length)) (error "Attempt to move to base outside sequence"))
   (beginning-of-line)
   (goto-char (+ position label-length)))
 
@@ -187,7 +184,7 @@
 (defun sequed-export ()
   "Export alignment in format for phylogenetic software."
   (interactive)
-  (let ((oldbuf (current-buffer)) nseqs nsites f-lines templine f-buffer start end) 
+  (let ((oldbuf (current-buffer)) nseqs nsites f-lines templine f-buffer start end)
     (save-current-buffer
       (set-buffer (get-buffer-create "*export alignment*"))
       (erase-buffer)
@@ -200,7 +197,7 @@
       (goto-char 0)
       (setq-local comment-start "; ")
       (setq-local comment-end "")
-      (remove-fasta-comments)
+      (sequed-remove-fasta-comments)
       (goto-char 0)
       (setq nseqs (how-many ">[[:word:]\-/|_.]+"))
       (goto-char 0)
@@ -211,13 +208,13 @@
       (insert (concat (number-to-string nsites) "\n"))
       (while (re-search-forward ">" nil t)
 	(delete-backward-char 1))
-      (fundamental-mode) 
+      (fundamental-mode)
       (display-buffer( current-buffer)))))
 
 ;p
 ;; Pad labels to equal length to allow viewing of alignments
 (defun sequed-labels-equal-length (labels)
-    "Make fasta labels equal length by padding all to length of longest name."
+    "Make fasta LABELS equal length by padding all to length of longest name."
     (let* (currline labelsizes equallabels maxszlabel)
       (setq currline 0)
       (while (< currline (length labels))
@@ -230,21 +227,21 @@
 	(push (concat (string-trim (nth currline labels))
 		      (make-string (- (+ 1 maxszlabel) (nth currline labelsizes)) ?\s )) equallabels)
 	(setq currline (+ 1 currline)))
-      equallabels
-      ))
+      equallabels))
 
 ;; Length of longest string in list1
 (defun sequed-max2 (list1)
+"Get length of longest string in variable LIST1."
   (let (mx clist curr)
     (setq clist (cl-copy-list list1))
     (setq mx (pop clist))
     (while clist (setq curr (pop clist))
     (if (> curr mx) (setq mx curr) ))
-    (print mx)
-    ))
+    (print mx)))
 
 ;; Color fasta labels
 (defun sequed-color-labels ()
+  "Identify labels and color them."
   (save-excursion
     (goto-char 0)
     (while (re-search-forward ">[[:word:]\-/|_.]+" nil t) (put-text-property (nth 0 (match-data)) (nth 1 (match-data))'face '(:foreground "yellow")))))
@@ -259,7 +256,7 @@
 (defvar sequed-base-color-t "red")
 
 (defvar sequed-color-bases-auto t
-  "Auto-deactivate `font-lock-mode' when `sequed-color-bases' is run.")
+  "Auto-deactivate variable `font-lock-mode' when `sequed-color-bases' is run.")
 
 ;;; Per base face colors
 (defun sequed-base-color-make-faces (&optional force)
@@ -280,8 +277,9 @@
 
 ;; color all acgt's in buffer
 (defun sequed-color-bases ()
-  "Color dna bases in the buffer. If `sequed-color-bases-auto' is set we 
-disable `font-lock-mode'. Otherwise, raise an error to alert the user."
+  "Color dna bases in the buffer.
+If `sequed-color-bases-auto' is set we
+disable variable `font-lock-mode'.  Otherwise, raise an error to alert the user."
   (if (and sequed-color-bases-auto font-lock-mode)
     (font-lock-mode -1))
   (if font-lock-mode
@@ -304,3 +302,4 @@ disable `font-lock-mode'. Otherwise, raise an error to alert the user."
          (t nil))
         (setq s (+ s 1))))))
 
+;;; sequed.el ends here
