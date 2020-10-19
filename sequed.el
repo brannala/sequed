@@ -1,7 +1,40 @@
+;;; sequed.el --- Major mode for viewing/editing FASTA format DNA sequence data and alignments
 
+;; Author: Bruce Rannala
+;; URL: https://github.com/brannala/sequed
+;; Version: 0.1.0
+;; Package-Requires: ((emacs "24.3"))
+;; License: GNU General Public License Version 3
 
+;; This program is free software; you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation, either version 3 of the License, or
+;; (at your option) any later version.
 
-(add-to-list 'auto-mode-alist '("\\.fa\\'" . sequed-mode) '("\\.aln\\'" . sequed-mode) '("\\.fas\\'" . sequed-mode))
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+;; Commentary:
+;;
+;; Major mode for editing DNA sequence data in FASTA format and viewing multiple sequence alignments.
+;;
+;; Usage:
+;;
+;; M-x sequed-mode to invoke. Automatically invoked as major mode for .fa and .aln files.
+;; Commands in sequed-mode major mode:
+;; M-x sequed-export [C-c C-e] -> export to new buffer in BPP format
+;; M-x sequed-mkaln [C-c C-a] -> create an alignment view in read-only buffer in sequed-aln-mode
+;; Commands in sequed-aln-mode major mode:
+;; M-x sequed-aln-gotobase [] -> prompt for base number to move cursor to that column in alignment
+;; M-x sequed-aln-seqfeatures [] -> print number of sequences and number of sites
+;;; Code:
+
+(add-to-list 'auto-mode-alist '("\\.fa\\'" . sequed-mode) '("\\.aln\\'" . sequed-mode))
 
 (defconst sequed-mode-syntax-table
   (let ((table (make-syntax-table)))
@@ -34,7 +67,7 @@
   (setq mode-name "SequEd")
   (use-local-map sequed-mode-map)
   (define-key sequed-mode-map (kbd "C-c C-a") 'sequed-mkaln)
-  (define-key sequed-mode-map (kbd "C-c C-a") 'sequed-export)
+  (define-key sequed-mode-map (kbd "C-c C-e") 'sequed-export)
   (define-key sequed-mode-map [menu-bar] (make-sparse-keymap))
   (let ((menuMap (make-sparse-keymap "SequEd")))
     (define-key sequed-mode-map [menu-bar sequed] (cons "SequEd" menuMap))
