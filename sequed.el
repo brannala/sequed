@@ -79,7 +79,7 @@
     (define-key menuMap [export]
       '("Export" . sequed-export)))
   (if (eq (sequed-check-fasta) nil) (error "Not a fasta file!"))
-  (font-lock-fontify-buffer)
+  (font-lock-ensure)
   (setq-local comment-start "; ")
   (setq-local comment-end "")
   (provide 'sequed))
