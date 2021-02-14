@@ -110,7 +110,7 @@
       '("Move to base" . sequed-aln-gotobase))
     (define-key menuMap [features]
       '("Sequence features" . sequed-aln-seqfeatures)))
-  (font-lock-fontify-buffer))
+  (font-lock-ensure))
 
 (defun sequed-check-fasta ()
   "Check if file is in fasta format."
@@ -123,6 +123,10 @@
   (goto-char (point-min))
   (let (kill-ring)
     (comment-kill (count-lines (point-min) (point-max)))))
+
+(defvar sequed-label-length)
+(defvar sequed-seq-length)
+(defvar sequed-noseqs)
 
 ;; Create a read-only buffer with pretty alignment displayed
 (defun sequed-mkaln ()
@@ -157,9 +161,9 @@
     (with-current-buffer buf
       (erase-buffer)
       (sequed-aln-mode)
-      (defvar sequed-label-length (length (car elabels)))
-      (defvar sequed-seq-length (length (car f-concatlines)))
-      (defvar sequed-noseqs (length elabels))
+      (setq sequed-label-length (length (car elabels)))
+      (setq sequed-seq-length (length (car f-concatlines)))
+      (setq sequed-noseqs (length elabels))
       (setq truncate-lines t)
       (setq f-linenum 0) ; Counts the original file's line number being evaluated
     (while (< f-linenum (length f-lines))
@@ -209,7 +213,7 @@
       (insert (concat (number-to-string nseqs) "  "))
       (insert (concat (number-to-string nsites) "\n"))
       (while (re-search-forward ">" nil t)
-	(delete-backward-char 1))
+	(delete-char 1))
       (fundamental-mode)
       (display-buffer( current-buffer)))))
 
