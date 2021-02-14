@@ -1,8 +1,10 @@
-;;; sequed.el --- Major mode for FASTA format DNA sequences and alignments
+;;; sequed.el --- Major mode for FASTA format DNA alignments
 
-;; Author: Bruce Rannala
+;; Copyright (C) 2020-2021 Bruce Rannala
+
+;; Author: Bruce Rannala <brannala@ucdavis.edu
 ;; URL: https://github.com/brannala/sequed
-;; Version: 0.1.0
+;; Version: 1.00
 ;; Package-Requires: ((emacs "24.4"))
 ;; License: GNU General Public License Version 3
 
@@ -25,9 +27,9 @@
 
 ;; Usage:
 ;;
-;; M-x sequed-mode to invoke. Automatically invoked as major mode for .fa and .aln files.
+;; M-x sequed-mode to invoke.  Automatically invoked as major mode for .fa and .aln files.
 ;; Sequed-mode major mode:
-;; M-x sequed-export [C-c C-e] -> export to new buffer in BPP format
+;; M-x sequed-export [C-c C-e] -> export to new buffer in BPP/Phylip format
 ;; M-x sequed-mkaln [C-c C-a] -> create an alignment view in read-only buffer in sequed-aln-mode
 ;; sequed-aln-mode major mode:
 ;; M-x sequed-aln-gotobase [C-c C-b] -> prompt for base number to move cursor to that column in alignment
@@ -155,9 +157,9 @@
     (with-current-buffer buf
       (erase-buffer)
       (sequed-aln-mode)
-      (setq-local label-length (length (car elabels)))
-      (setq-local seq-length (length (car f-concatlines)))
-      (setq-local noseqs (length elabels))
+      (defvar sequed-label-length (length (car elabels)))
+      (defvar sequed-seq-length (length (car f-concatlines)))
+      (defvar sequed-noseqs (length elabels))
       (setq truncate-lines t)
       (setq f-linenum 0) ; Counts the original file's line number being evaluated
     (while (< f-linenum (length f-lines))
@@ -171,15 +173,15 @@
 (defun sequed-aln-gotobase (position)
   "Move to base at POSITION in sequence that cursor is positioned in."
   (interactive "nPosition of base: ")
-;  (print ( concat "Sequence length: " 'seq-length))
-  (if (or (< position 1) (> position seq-length)) (error "Attempt to move to base outside sequence"))
+;  (print ( concat "Sequence length: " 'sequed-seq-length))
+  (if (or (< position 1) (> position sequed-seq-length)) (error "Attempt to move to base outside sequence"))
   (beginning-of-line)
-  (goto-char (+ position label-length)))
+  (goto-char (+ position sequed-label-length)))
 
 (defun sequed-aln-seqfeatures ()
   "List number of sequences and length of region."
   (interactive)
-(message "No. sequences: %d. No. sites: %d."  noseqs seq-length))
+(message "No. sequences: %d. No. sites: %d."  sequed-noseqs sequed-seq-length))
 
 (defun sequed-export ()
   "Export alignment in format for phylogenetic software."
@@ -285,7 +287,7 @@ disable variable `font-lock-mode'.  Otherwise, raise an error to alert the user.
   (if font-lock-mode
     (error "Font-lock-mode is on -- deactivate it"))
   (save-excursion
-    (let (c)
+    (let (c s)
       (setq s (point-min))
       (goto-char s)
       (while (< s (point-max))
