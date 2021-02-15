@@ -81,8 +81,7 @@
   (if (eq (sequed-check-fasta) nil) (error "Not a fasta file!"))
   (font-lock-ensure)
   (setq-local comment-start "; ")
-  (setq-local comment-end "")
-  (provide 'sequed))
+  (setq-local comment-end ""))
 
 (defvar sequed-aln-mode-map nil "Keymap for `sequed-aln-mode'.")
 
@@ -307,5 +306,7 @@ disable variable `font-lock-mode'.  Otherwise, raise an error to alert the user.
           (set-text-properties s (+ s 1) '(face sequed-base-face-t)))
          (t nil))
         (setq s (+ s 1))))))
+
+(provide 'sequed)
 
 ;;; sequed.el ends here
