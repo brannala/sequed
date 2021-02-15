@@ -39,6 +39,7 @@
 
 (require 'subr-x)
 
+;;;###autoload
 (add-to-list 'auto-mode-alist '("\\.\\(?:fa\\|aln\\)\\'" . sequed-mode))
 
 (defconst sequed-mode-syntax-table
@@ -63,6 +64,7 @@
 (define-key sequed-mode-map (kbd "C-c C-e") 'sequed-export)
  ;; define your menu
 
+;;;###autoload
 (define-derived-mode sequed-mode fundamental-mode
   "A bioinformatics major mode for viewing and editing sequence data."
   (kill-all-local-variables)
