@@ -37,6 +37,8 @@
 
 ;;; Code:
 
+(require 'subr-x)
+
 (add-to-list 'auto-mode-alist '("\\.fa\\'" . sequed-mode) '("\\.aln\\'" . sequed-mode))
 
 (defconst sequed-mode-syntax-table
@@ -251,8 +253,7 @@
     (goto-char 0)
     (while (re-search-forward ">[[:word:]\-/|_.]+" nil t) (put-text-property (nth 0 (match-data)) (nth 1 (match-data))'face '(:foreground "yellow")))))
 
-;; Auto-deactivate font-lock if needed
-(setq sequed-color-bases-auto t)
+
 
 ;; Colors of the DNA bases.
 (defvar sequed-base-color-a "blue")
@@ -260,6 +261,7 @@
 (defvar sequed-base-color-g "green")
 (defvar sequed-base-color-t "red")
 
+;; Auto-deactivate font-lock if needed
 (defvar sequed-color-bases-auto t
   "Auto-deactivate variable `font-lock-mode' when `sequed-color-bases' is run.")
 
