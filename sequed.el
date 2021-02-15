@@ -39,7 +39,7 @@
 
 (require 'subr-x)
 
-(add-to-list 'auto-mode-alist '("\\.fa\\'" . sequed-mode) '("\\.aln\\'" . sequed-mode))
+(add-to-list 'auto-mode-alist '("\\.\\(?:fa\\|aln\\)\\'" . sequed-mode))
 
 (defconst sequed-mode-syntax-table
   (let ((table (make-syntax-table)))
