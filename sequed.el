@@ -37,7 +37,10 @@
 
 ;;; Code:
 
-(add-to-list 'auto-mode-alist '("\\.fa\\'" . sequed-mode) '("\\.aln\\'" . sequed-mode))
+(require 'subr-x)
+
+;;;###autoload
+(add-to-list 'auto-mode-alist '("\\.\\(?:fa\\|aln\\)\\'" . sequed-mode))
 
 (defconst sequed-mode-syntax-table
   (let ((table (make-syntax-table)))
@@ -61,6 +64,7 @@
 (define-key sequed-mode-map (kbd "C-c C-e") 'sequed-export)
  ;; define your menu
 
+;;;###autoload
 (define-derived-mode sequed-mode fundamental-mode
   "A bioinformatics major mode for viewing and editing sequence data."
   (kill-all-local-variables)
@@ -81,8 +85,7 @@
   (if (eq (sequed-check-fasta) nil) (error "Not a fasta file!"))
   (font-lock-ensure)
   (setq-local comment-start "; ")
-  (setq-local comment-end "")
-  (provide 'sequed))
+  (setq-local comment-end ""))
 
 (defvar sequed-aln-mode-map nil "Keymap for `sequed-aln-mode'.")
 
@@ -252,8 +255,7 @@
     (goto-char 0)
     (while (re-search-forward ">[[:word:]\-/|_.]+" nil t) (put-text-property (nth 0 (match-data)) (nth 1 (match-data))'face '(:foreground "yellow")))))
 
-;; Auto-deactivate font-lock if needed
-(setq sequed-color-bases-auto t)
+
 
 ;; Colors of the DNA bases.
 (defvar sequed-base-color-a "blue")
@@ -261,6 +263,7 @@
 (defvar sequed-base-color-g "green")
 (defvar sequed-base-color-t "red")
 
+;; Auto-deactivate font-lock if needed
 (defvar sequed-color-bases-auto t
   "Auto-deactivate variable `font-lock-mode' when `sequed-color-bases' is run.")
 
@@ -307,5 +310,7 @@ disable variable `font-lock-mode'.  Otherwise, raise an error to alert the user.
           (set-text-properties s (+ s 1) '(face sequed-base-face-t)))
          (t nil))
         (setq s (+ s 1))))))
+
+(provide 'sequed)
 
 ;;; sequed.el ends here
