@@ -5,7 +5,7 @@
 ;; Author: Bruce Rannala <brannala@ucdavis.edu
 ;; URL: https://github.com/brannala/sequed
 ;; Version: 1.00
-;; Package-Requires: ((emacs "24.4"))
+;; Package-Requires: ((emacs "25.2"))
 ;; License: GNU General Public License Version 3
 
 ;; This program is free software; you can redistribute it and/or modify
