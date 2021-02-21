@@ -220,7 +220,6 @@
       (fundamental-mode)
       (display-buffer( current-buffer)))))
 
-;p
 ;; Pad labels to equal length to allow viewing of alignments
 (defun sequed-labels-equal-length (labels)
     "Make fasta LABELS equal length by padding all to length of longest name."
