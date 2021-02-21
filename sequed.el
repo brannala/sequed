@@ -154,7 +154,7 @@
     (setq f-lines (split-string f-buffer ">\\([[:word:]\-/|_.]+\\)\\([\s]+.*\n\\)?" t))
     (setq f-linenum 0) ; Counts the original file's line number being evaluated
     (while (< f-linenum (length f-lines))
-      (push (mapconcat 'concat (split-string (nth f-linenum f-lines) "\n" t) "") f-concatlines)
+      (push (mapconcat #'concat (split-string (nth f-linenum f-lines) "\n" t) "") f-concatlines)
       (setq f-linenum (+ 1 f-linenum)))
     (setq elabels (sequed-labels-equal-length f-labels))
     (setq f-linenum 0) ; Counts the original file's line number being evaluated
@@ -201,7 +201,7 @@
       (setq f-buffer (buffer-substring-no-properties (point-min) (point-max)))
       (goto-char (point-min))
       (setq f-lines (split-string f-buffer ">\\([[:word:]\-/|_.]+\\)\\([\s]+.*\n\\)?" t))
-      (setq templine (mapconcat 'concat (split-string (nth 1 f-lines) "\n" t) ""))
+      (setq templine (mapconcat #'concat (split-string (nth 1 f-lines) "\n" t) ""))
       (setq-local nsites (length templine))
       (goto-char 0)
       (setq-local comment-start "; ")
