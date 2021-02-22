@@ -54,65 +54,52 @@
       '(("^[^>]\\([a-zA-Z- ]+\\)" . font-lock-string-face)
 	("^>.+\n" . font-lock-constant-face)))
 
-(defvar sequed-mode-map nil "Keymap for `sequed-mode'.")
-
-(if sequed-mode-map
-  () ; Do not change the keymap if it's already set up
-  (setq sequed-mode-map (make-sparse-keymap)))
-  ;; Define custom keybindings for the mode
-(define-key sequed-mode-map (kbd "C-c C-a") 'sequed-mkaln)
-(define-key sequed-mode-map (kbd "C-c C-e") 'sequed-export)
- ;; define your menu
+(defvar sequed-mode-map
+  (let ((km (make-sparse-keymap)))
+    ;; assign sequed-mode commands to keys
+    (define-key km (kbd "C-c C-a") 'sequed-mkaln)
+    (define-key km (kbd "C-c C-e") 'sequed-export)
+    km))
+;; define sequed-mode menu
+(define-key sequed-mode-map [menu-bar] (make-sparse-keymap))
+(let ((menuMap (make-sparse-keymap "SequEd")))
+  (define-key sequed-mode-map [menu-bar sequed] (cons "SequEd" menuMap))
+  ;; assign sequed-mode commands to menu
+  (define-key menuMap [align]
+    '("View Alignment" . sequed-mkaln))
+  (define-key menuMap [export]
+    '("Export" . sequed-export)))
+      
 
 ;;;###autoload
-(define-derived-mode sequed-mode fundamental-mode
+(define-derived-mode sequed-mode fundamental-mode "SequEd"
   "A bioinformatics major mode for viewing and editing sequence data."
-  (kill-all-local-variables)
   :syntax-table sequed-mode-syntax-table
   (setq font-lock-defaults '(sequed-colors))
-  (setq major-mode 'sequed-mode)
-  (setq mode-name "SequEd")
-  (use-local-map sequed-mode-map)
-  (define-key sequed-mode-map (kbd "C-c C-a") 'sequed-mkaln)
-  (define-key sequed-mode-map (kbd "C-c C-e") 'sequed-export)
-  (define-key sequed-mode-map [menu-bar] (make-sparse-keymap))
-  (let ((menuMap (make-sparse-keymap "SequEd")))
-    (define-key sequed-mode-map [menu-bar sequed] (cons "SequEd" menuMap))
-    (define-key menuMap [align]
-      '("View Alignment" . sequed-mkaln))
-    (define-key menuMap [export]
-      '("Export" . sequed-export)))
   (if (eq (sequed-check-fasta) nil) (error "Not a fasta file!"))
   (font-lock-ensure)
   (setq-local comment-start "; ")
   (setq-local comment-end ""))
 
-(defvar sequed-aln-mode-map nil "Keymap for `sequed-aln-mode'.")
-
-(if sequed-aln-mode-map
-  () ; Do not change the keymap if it's already set up
-  (setq sequed-aln-mode-map (make-sparse-keymap)))
-  ;; Define custom keybindings for the mode
-(define-key sequed-aln-mode-map (kbd "C-c C-b") 'sequed-aln-gotobase)
-(define-key sequed-aln-mode-map (kbd "C-c C-f") 'sequed-aln-seqfeatures)
- ;; define your menu
-
-(define-derived-mode sequed-aln-mode fundamental-mode
-  "A bioinformatics major mode for viewing sequence alignments."
-  (kill-all-local-variables)
-  :syntax-table sequed-mode-syntax-table
-  (setq font-lock-defaults '(sequed-colors))
-  (setq mode-name "SequEdAln")
-  (use-local-map sequed-aln-mode-map)
-  (define-key sequed-aln-mode-map (kbd "C-c C-b") 'sequed-aln-gotobase)
-  (define-key sequed-aln-mode-map (kbd "C-c C-f") 'sequed-aln-seqfeatures)
-  (define-key sequed-aln-mode-map [menu-bar] (make-sparse-keymap))
+(defvar sequed-aln-mode-map
+  (let ((km2 (make-sparse-keymap)))
+    ;; assign sequed-aln-mode commands to keys
+    (define-key km2 (kbd "C-c C-b") 'sequed-aln-gotobase)
+    (define-key km2 (kbd "C-c C-f") 'sequed-aln-seqfeatures)
+    km2))
+;; define sequed-aln-mode menu
+(define-key sequed-aln-mode-map [menu-bar] (make-sparse-keymap))
   (let ((menuMap (make-sparse-keymap "SequEdAln")))
     (define-key sequed-aln-mode-map [menu-bar sequed-aln] (cons "SequEdAln" menuMap))
     (define-key menuMap [move]
       '("Move to base" . sequed-aln-gotobase))
     (define-key menuMap [features]
       '("Sequence features" . sequed-aln-seqfeatures)))
+
+(define-derived-mode sequed-aln-mode fundamental-mode "SequEdAln"
+  "A bioinformatics major mode for viewing sequence alignments."
+  :syntax-table sequed-mode-syntax-table
+  (setq font-lock-defaults '(sequed-colors))
   (font-lock-ensure))
 
 (defun sequed-check-fasta ()
@@ -180,7 +167,6 @@
 (defun sequed-aln-gotobase (position)
   "Move to base at POSITION in sequence that cursor is positioned in."
   (interactive "nPosition of base: ")
-;  (print ( concat "Sequence length: " 'sequed-seq-length))
   (if (or (< position 1) (> position sequed-seq-length)) (error "Attempt to move to base outside sequence"))
   (beginning-of-line)
   (goto-char (+ position sequed-label-length)))
@@ -244,8 +230,8 @@
     (setq clist (cl-copy-list list1))
     (setq mx (pop clist))
     (while clist (setq curr (pop clist))
-    (if (> curr mx) (setq mx curr) ))
-    (print mx)))
+	   (if (> curr mx) (setq mx curr) ))
+    mx ))
 
 ;; Color fasta labels
 (defun sequed-color-labels ()
