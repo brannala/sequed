@@ -59,16 +59,17 @@
     ;; assign sequed-mode commands to keys
     (define-key km (kbd "C-c C-a") 'sequed-mkaln)
     (define-key km (kbd "C-c C-e") 'sequed-export)
-    km))
-;; define sequed-mode menu
-(define-key sequed-mode-map [menu-bar] (make-sparse-keymap))
-(let ((menuMap (make-sparse-keymap "SequEd")))
-  (define-key sequed-mode-map [menu-bar sequed] (cons "SequEd" menuMap))
-  ;; assign sequed-mode commands to menu
-  (define-key menuMap [align]
-    '("View Alignment" . sequed-mkaln))
-  (define-key menuMap [export]
-    '("Export" . sequed-export)))
+    (define-key km [menu-bar sequed]
+      (cons "SequEd" (make-sparse-keymap "SequEd")))
+    ;; assign sequed-mode commands to menu
+    (define-key km
+      [menu-bar sequed sequed-mkaln]
+      '("View Alignment" . sequed-mkaln))
+    (define-key km
+      [menu-bar sequed sequed-export]
+      '("Export" . sequed-export))
+    km)
+  "Keymap used in Sequed mode.")
       
 
 ;;;###autoload
@@ -86,15 +87,15 @@
     ;; assign sequed-aln-mode commands to keys
     (define-key km2 (kbd "C-c C-b") 'sequed-aln-gotobase)
     (define-key km2 (kbd "C-c C-f") 'sequed-aln-seqfeatures)
-    km2))
-;; define sequed-aln-mode menu
-(define-key sequed-aln-mode-map [menu-bar] (make-sparse-keymap))
-  (let ((menuMap (make-sparse-keymap "SequEdAln")))
-    (define-key sequed-aln-mode-map [menu-bar sequed-aln] (cons "SequEdAln" menuMap))
-    (define-key menuMap [move]
+    (define-key km2 [menu-bar sequedaln]
+      (cons "SequEdAln" (make-sparse-keymap "SequEdAln")))
+    ;; define sequed-aln-mode menu
+    (define-key km2 [menu-bar sequedaln move]
       '("Move to base" . sequed-aln-gotobase))
-    (define-key menuMap [features]
-      '("Sequence features" . sequed-aln-seqfeatures)))
+    (define-key km2 [menu-bar sequedaln features]
+      '("Sequence features" . sequed-aln-seqfeatures))
+    km2)
+  "Keymap used in SequedAln mode.")
 
 (define-derived-mode sequed-aln-mode fundamental-mode "SequEdAln"
   "A bioinformatics major mode for viewing sequence alignments."
