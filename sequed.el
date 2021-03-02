@@ -42,6 +42,41 @@
 ;;;###autoload
 (add-to-list 'auto-mode-alist '("\\.\\(?:fa\\|aln\\)\\'" . sequed-mode))
 
+(defface base-c '((t :background "green"))
+  "Basic face for DNA base c."
+  :group 'base-faces)
+
+(defface base-t '((t :background "orange"))
+  "Basic face for DNA base t."
+  :group 'base-faces)
+
+(defface base-a '((t :background "red"))
+  "Basic face for DNA base a."
+  :group 'base-faces)
+
+(defface base-g '((t :background "blue"))
+  "Basic face for DNA base g."
+  :group 'base-faces)
+
+
+(defvar base-a 'base-a)
+(defvar base-c 'base-c)
+(defvar base-g 'base-g)
+(defvar base-t 'base-t)
+
+(defvar sequed-aln-mode-font-lock nil "first element for `font-lock-defaults'")
+
+
+(setq sequed-aln-mode-font-lock
+      '(("^>[^\s]+" . font-lock-constant-face)
+	("[c]" . base-c)
+	("[t]" . base-t)
+	("[a]" . base-a)
+	("[g]" . base-g)))
+
+
+
+
 (defconst sequed-mode-syntax-table
   (let ((table (make-syntax-table)))
     ;;  ; is a comment starter
@@ -100,7 +135,7 @@
 (define-derived-mode sequed-aln-mode fundamental-mode "SequEdAln"
   "A bioinformatics major mode for viewing sequence alignments."
   :syntax-table sequed-mode-syntax-table
-  (setq font-lock-defaults '(sequed-colors))
+  (setq font-lock-defaults '(sequed-aln-mode-font-lock))
   (font-lock-ensure))
 
 (defun sequed-check-fasta ()
@@ -160,7 +195,7 @@
     (while (< f-linenum (length f-lines))
       (insert (concat (nth f-linenum text) "\n"))
       (setq f-linenum (+ 1 f-linenum)))
-    (sequed-color-bases)
+    ;; (sequed-color-bases)
     (sequed-color-labels)
     (read-only-mode))
     (display-buffer buf)))
@@ -243,59 +278,9 @@
 
 
 
-;; Colors of the DNA bases.
-(defvar sequed-base-color-a "blue")
-(defvar sequed-base-color-c "yellow")
-(defvar sequed-base-color-g "green")
-(defvar sequed-base-color-t "red")
 
-;; Auto-deactivate font-lock if needed
-(defvar sequed-color-bases-auto t
-  "Auto-deactivate variable `font-lock-mode' when `sequed-color-bases' is run.")
 
-;;; Per base face colors
-(defun sequed-base-color-make-faces (&optional force)
-  "Build a face to display bases with.  FORCE remakes the faces."
-  (when (or (not (facep 'sequed-face-t)) force)
-    (let ((base-list '("a" "c" "g" "t"))
-          base base-face)
-      (while base-list
-        (setq base (car base-list))
-        (setq base-face (intern (concat "sequed-base-face-" base)))
-        (make-face base-face)
-        (set-face-foreground
-         base-face (symbol-value (intern (concat "sequed-base-color-" base))))
-        (setq base-list (cdr base-list))))))
 
-;; Make faces on load
-(sequed-base-color-make-faces t)
-
-;; color all acgt's in buffer
-(defun sequed-color-bases ()
-  "Color dna bases in the buffer.
-If `sequed-color-bases-auto' is set we
-disable variable `font-lock-mode'.  Otherwise, raise an error to alert the user."
-  (if (and sequed-color-bases-auto font-lock-mode)
-    (font-lock-mode -1))
-  (if font-lock-mode
-    (error "Font-lock-mode is on -- deactivate it"))
-  (save-excursion
-    (let (c s)
-      (setq s (point-min))
-      (goto-char s)
-      (while (< s (point-max))
-        (setq c (downcase (char-after s)))
-        (cond
-         ((eq c ?a)
-          (set-text-properties s (+ s 1) '(face sequed-base-face-a)))
-         ((eq c ?c)
-          (set-text-properties s (+ s 1) '(face sequed-base-face-c)))
-         ((eq c ?g)
-          (set-text-properties s (+ s 1) '(face sequed-base-face-g)))
-         ((eq c ?t)
-          (set-text-properties s (+ s 1) '(face sequed-base-face-t)))
-         (t nil))
-        (setq s (+ s 1))))))
 
 (provide 'sequed)
 
