@@ -1,5 +1,5 @@
 # sequed
-DNA sequence editor and alignment viewer for emacs. Provides a mode for editing sequence data in fasta format. Also, an alignment viewer with base coloring and a search feature to locate a particular base. Because of limits on the size of buffer emacs easily handles I would not recommend using this mode to view alignments larger than 10kb. There is also an 
+DNA sequence editor and alignment viewer for emacs. Provides a mode for editing sequence data in fasta format. Also, an alignment viewer with base coloring and a search feature to locate a particular base. Because of limits on the lengths of lines emacs easily handles I would not recommend using this mode to view alignments larger than 10kb. There is also an 
 option to export an alignment in a simple format used by the phylogenetics program BPP. Once installed, sequed-mode automatically becomes the major mode for files with .fa or .aln endings. You can manually invoke the sequed-mode major mode with 
 ```
 M-x sequed-mode 
