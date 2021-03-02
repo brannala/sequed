@@ -59,23 +59,19 @@
   :group 'base-faces)
 
 
-(defvar base-a 'base-a)
-(defvar base-c 'base-c)
-(defvar base-g 'base-g)
-(defvar base-t 'base-t)
+(defvar sequed-aln-base-a 'base-a)
+(defvar sequed-aln-base-c 'base-c)
+(defvar sequed-aln-base-g 'base-g)
+(defvar sequed-aln-base-t 'base-t)
 
-(defvar sequed-aln-mode-font-lock nil "first element for `font-lock-defaults'")
-
+(defvar sequed-aln-mode-font-lock nil "DNA bases colors for `font-lock-defaults'")
 
 (setq sequed-aln-mode-font-lock
       '(("^>[^\s]+" . font-lock-constant-face)
-	("[c]" . base-c)
-	("[t]" . base-t)
-	("[a]" . base-a)
-	("[g]" . base-g)))
-
-
-
+	("[cC]" . sequed-aln-base-c)
+	("[tT]" . sequed-aln-base-t)
+	("[aA]" . sequed-aln-base-a)
+	("[gG]" . sequed-aln-base-g)))
 
 (defconst sequed-mode-syntax-table
   (let ((table (make-syntax-table)))
@@ -275,12 +271,6 @@
   (save-excursion
     (goto-char 0)
     (while (re-search-forward ">[[:word:]\-/|_.]+" nil t) (put-text-property (nth 0 (match-data)) (nth 1 (match-data))'face '(:foreground "yellow")))))
-
-
-
-
-
-
 
 (provide 'sequed)
 
