@@ -42,29 +42,29 @@
 ;;;###autoload
 (add-to-list 'auto-mode-alist '("\\.\\(?:fa\\|aln\\)\\'" . sequed-mode))
 
-(defface base-c '((t :background "green"))
+(defface sequed-base-c '((t :background "green"))
   "Basic face for DNA base c."
   :group 'base-faces)
 
-(defface base-t '((t :background "orange"))
+(defface sequed-base-t '((t :background "orange"))
   "Basic face for DNA base t."
   :group 'base-faces)
 
-(defface base-a '((t :background "red"))
+(defface sequed-base-a '((t :background "red"))
   "Basic face for DNA base a."
   :group 'base-faces)
 
-(defface base-g '((t :background "blue"))
+(defface sequed-base-g '((t :background "blue"))
   "Basic face for DNA base g."
   :group 'base-faces)
 
 
-(defvar sequed-aln-base-a 'base-a)
-(defvar sequed-aln-base-c 'base-c)
-(defvar sequed-aln-base-g 'base-g)
-(defvar sequed-aln-base-t 'base-t)
+(defvar sequed-aln-base-a 'sequed-base-a)
+(defvar sequed-aln-base-c 'sequed-base-c)
+(defvar sequed-aln-base-g 'sequed-base-g)
+(defvar sequed-aln-base-t 'sequed-base-t)
 
-(defvar sequed-aln-mode-font-lock nil "DNA bases colors for `font-lock-defaults'")
+(defvar sequed-aln-mode-font-lock nil "DNA bases colors for `font-lock-defaults'.")
 
 (setq sequed-aln-mode-font-lock
       '(("^>[^\s]+" . font-lock-constant-face)
@@ -167,18 +167,27 @@
     (goto-char (point-min))
     (setq f-pos 0)
     (while (string-match ">[[:word:]\-/|_.]+" f-buffer f-pos)
-      (push (substring-no-properties f-buffer (nth 0 (match-data)) (nth 1 (match-data))) f-labels)
+      (push (substring-no-properties f-buffer
+				     (nth 0 (match-data))
+				     (nth 1 (match-data)))
+	                             f-labels)
       (setq f-pos (nth 1 (match-data))))
     (setq f-labels (reverse f-labels))
-    (setq f-lines (split-string f-buffer ">\\([[:word:]\-/|_.]+\\)\\([\s]+.*\n\\)?" t))
+    (setq f-lines (split-string
+		   f-buffer ">\\([[:word:]\-/|_.]+\\)\\([\s]+.*\n\\)?" t))
     (setq f-linenum 0) ; Counts the original file's line number being evaluated
     (while (< f-linenum (length f-lines))
-      (push (mapconcat #'concat (split-string (nth f-linenum f-lines) "\n" t) "") f-concatlines)
+      (push (mapconcat #'concat (split-string
+				 (nth f-linenum f-lines)
+				 "\n" t) "") f-concatlines)
       (setq f-linenum (+ 1 f-linenum)))
     (setq elabels (sequed-labels-equal-length f-labels))
     (setq f-linenum 0) ; Counts the original file's line number being evaluated
     (while (< f-linenum (length f-lines))
-      (push (concat (nth f-linenum elabels) (nth f-linenum f-concatlines)) text )
+      (push (concat
+	     (nth f-linenum elabels)
+	     (nth f-linenum f-concatlines))
+	    text)
       (setq f-linenum (+ 1 f-linenum)))
     (with-current-buffer buf
       (erase-buffer)
@@ -199,14 +208,17 @@
 (defun sequed-aln-gotobase (position)
   "Move to base at POSITION in sequence that cursor is positioned in."
   (interactive "nPosition of base: ")
-  (if (or (< position 1) (> position sequed-seq-length)) (user-error "Attempt to move to base outside sequence"))
+  (if (or (< position 1)
+	  (> position sequed-seq-length))
+      (user-error "Attempt to move to base outside sequence"))
   (beginning-of-line)
   (goto-char (+ position sequed-label-length)))
 
 (defun sequed-aln-seqfeatures ()
   "List number of sequences and length of region."
   (interactive)
-(message "No. sequences: %d. No. sites: %d."  sequed-noseqs sequed-seq-length))
+  (message "No. sequences: %d. No. sites: %d."
+	   sequed-noseqs sequed-seq-length))
 
 (defun sequed-export ()
   "Export alignment in format for phylogenetic software."
@@ -251,7 +263,11 @@
       (setq currline 0)
       (while (< currline (length labels))
 	(push (concat (string-trim (nth currline labels))
-		      (make-string (- (+ 1 maxszlabel) (nth currline labelsizes)) ?\s )) equallabels)
+		      (make-string
+		       (- (+ 1 maxszlabel)
+			  (nth currline labelsizes))
+		       ?\s ))
+	      equallabels)
 	(setq currline (+ 1 currline)))
       equallabels))
 
@@ -270,7 +286,10 @@
   "Identify labels and color them."
   (save-excursion
     (goto-char 0)
-    (while (re-search-forward ">[[:word:]\-/|_.]+" nil t) (put-text-property (nth 0 (match-data)) (nth 1 (match-data))'face '(:foreground "yellow")))))
+    (while (re-search-forward ">[[:word:]\-/|_.]+" nil t)
+      (put-text-property
+       (nth 0 (match-data))
+       (nth 1 (match-data))'face '(:foreground "yellow")))))
 
 (provide 'sequed)
 
