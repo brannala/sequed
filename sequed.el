@@ -108,7 +108,7 @@
   "A bioinformatics major mode for viewing and editing sequence data."
   :syntax-table sequed-mode-syntax-table
   (setq font-lock-defaults '(sequed-colors))
-  (if (eq (sequed-check-fasta) nil) (error "Not a fasta file!"))
+  (if (eq (sequed-check-fasta) nil) (user-error "Not a fasta file"))
   (font-lock-ensure)
   (setq-local comment-start "; ")
   (setq-local comment-end ""))
@@ -154,7 +154,7 @@
 (defun sequed-mkaln ()
   "Create read-only buffer for alignment viewing."
   (interactive)
-  (if (eq (sequed-check-fasta) nil) (error "Not a fasta file!"))
+  (if (eq (sequed-check-fasta) nil) (user-error "Not a fasta file"))
   (let (f-buffer f-lines f-seqcount f-linenum f-labels f-pos f-concatlines
 		 elabels (buf (get-buffer-create "*Alignment Viewer*")) text
 		 (inhibit-read-only t) (oldbuf (current-buffer)))
@@ -199,7 +199,7 @@
 (defun sequed-aln-gotobase (position)
   "Move to base at POSITION in sequence that cursor is positioned in."
   (interactive "nPosition of base: ")
-  (if (or (< position 1) (> position sequed-seq-length)) (error "Attempt to move to base outside sequence"))
+  (if (or (< position 1) (> position sequed-seq-length)) (user-error "Attempt to move to base outside sequence"))
   (beginning-of-line)
   (goto-char (+ position sequed-label-length)))
 
