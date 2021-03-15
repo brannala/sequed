@@ -143,8 +143,7 @@
 									     (format-mode-line "%c"))
 									    (- sequed-label-length 1)))))
 			       "   "
-			       mode-line-modes mode-line-misc-info mode-line-end-spaces))
-  )
+			       mode-line-modes mode-line-misc-info mode-line-end-spaces)))
 
 (defun sequed-check-fasta ()
   "Check if file is in fasta format."
@@ -215,7 +214,6 @@
     (while (< f-linenum (length f-lines))
       (insert (concat (nth f-linenum text) "\n"))
       (setq f-linenum (+ 1 f-linenum)))
-    ;; (sequed-color-bases)
     (sequed-color-labels)
     (read-only-mode))
     (display-buffer buf)))
