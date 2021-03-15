@@ -132,7 +132,19 @@
   "A bioinformatics major mode for viewing sequence alignments."
   :syntax-table sequed-mode-syntax-table
   (setq font-lock-defaults '(sequed-aln-mode-font-lock))
-  (font-lock-ensure))
+  (font-lock-ensure)
+  (setq mode-line-format (list "%e" mode-line-front-space mode-line-mule-info
+			       mode-line-client mode-line-modified
+			       mode-line-remote mode-line-frame-identification
+			       mode-line-buffer-identification
+			       "  SeqID:" '(:eval (aref sequed-seqID (- (string-to-number (format-mode-line "%l")) 1)))
+			       " BasePos:" '(:eval (if (>  (- (current-column) (- sequed-label-length 1)) 0)
+						       (number-to-string (- (string-to-number
+									     (format-mode-line "%c"))
+									    (- sequed-label-length 1)))))
+			       "   "
+			       mode-line-modes mode-line-misc-info mode-line-end-spaces))
+  )
 
 (defun sequed-check-fasta ()
   "Check if file is in fasta format."
@@ -146,9 +158,10 @@
   (let (kill-ring)
     (comment-kill (count-lines (point-min) (point-max)))))
 
-(defvar sequed-label-length)
-(defvar sequed-seq-length)
-(defvar sequed-noseqs)
+(defvar-local sequed-label-length nil)
+(defvar-local sequed-seq-length nil)
+(defvar-local sequed-noseqs nil)
+(defvar-local sequed-seqID nil)
 
 ;; Create a read-only buffer with pretty alignment displayed
 (defun sequed-mkaln ()
@@ -182,6 +195,7 @@
 				 "\n" t) "") f-concatlines)
       (setq f-linenum (+ 1 f-linenum)))
     (setq elabels (sequed-labels-equal-length f-labels))
+
     (setq f-linenum 0) ; Counts the original file's line number being evaluated
     (while (< f-linenum (length f-lines))
       (push (concat
@@ -195,6 +209,7 @@
       (setq sequed-label-length (length (car elabels)))
       (setq sequed-seq-length (length (car f-concatlines)))
       (setq sequed-noseqs (length elabels))
+      (setq sequed-seqID (sequed-short-labels f-labels))
       (setq truncate-lines t)
       (setq f-linenum 0) ; Counts the original file's line number being evaluated
     (while (< f-linenum (length f-lines))
@@ -212,12 +227,12 @@
 	  (> position sequed-seq-length))
       (user-error "Attempt to move to base outside sequence"))
   (beginning-of-line)
-  (goto-char (+ position sequed-label-length)))
+  (move-to-column (+ position (- sequed-label-length 1))))
 
 (defun sequed-aln-seqfeatures ()
   "List number of sequences and length of region."
   (interactive)
-  (message "No. sequences: %d. No. sites: %d."
+  (message "Sequences:%d Sites:%d"
 	   sequed-noseqs sequed-seq-length))
 
 (defun sequed-export ()
@@ -270,6 +285,16 @@
 	      equallabels)
 	(setq currline (+ 1 currline)))
       equallabels))
+
+;; Get short labels for display on mode line
+(defun sequed-short-labels (labels)
+  "Create short LABELS for display in mode line."
+  (let* ((currline 0) seqID)
+    (setq seqID (make-vector(length labels) "Empty"))
+    (while (< currline (length labels))
+      (aset seqID currline (substring (nth currline labels) 1 11))
+      (setq currline (+ 1 currline)))
+    seqID))
 
 ;; Length of longest string in list1
 (defun sequed-max2 (list1)
