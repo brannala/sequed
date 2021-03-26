@@ -119,6 +119,7 @@
     ;; assign sequed-aln-mode commands to keys
     (define-key km2 (kbd "C-c C-b") 'sequed-aln-gotobase)
     (define-key km2 (kbd "C-c C-f") 'sequed-aln-seqfeatures)
+    (define-key km2 (kbd "C-c C-k") 'sequed-aln-kill-alignment)
     (define-key km2 [menu-bar sequedaln]
       (cons "SequEdAln" (make-sparse-keymap "SequEdAln")))
     ;; define sequed-aln-mode menu
@@ -126,6 +127,8 @@
       '("Move to base" . sequed-aln-gotobase))
     (define-key km2 [menu-bar sequedaln features]
       '("Sequence features" . sequed-aln-seqfeatures))
+    (define-key km2 [menu-bar sequedaln quit]
+      '("Quit Alignment" . sequed-aln-kill-alignment))
     km2)
   "Keymap used in SequedAln mode.")
 
@@ -248,7 +251,11 @@
       (setq f-linenum (+ 1 f-linenum)))
     (sequed-color-labels)
     (read-only-mode))
-    (display-buffer buf)))
+    (display-buffer buf))
+  (other-window 1)
+  (goto-char(point-min))
+  (sequed-aln-gotobase sequed-startpos)
+  )
 
 (defun sequed-aln-gotobase (position)
   "Move to base at POSITION in sequence that cursor is positioned in."
@@ -264,6 +271,11 @@
   (interactive)
   (message "Sequences:%d Sites:%d"
 	   sequed-noseqs sequed-seq-length))
+
+(defun sequed-aln-kill-alignment ()
+  "Kill alignment buffer and window."
+  (interactive)
+  (kill-buffer-and-window))
 
 (defun sequed-export ()
   "Export alignment in format for phylogenetic software."
