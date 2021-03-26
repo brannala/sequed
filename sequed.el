@@ -110,6 +110,7 @@
   (setq font-lock-defaults '(sequed-colors))
   (if (eq (sequed-check-fasta) nil) (user-error "Not a fasta file"))
   (font-lock-ensure)
+  (sequed-get-sequence-length)
   (setq-local comment-start "; ")
   (setq-local comment-end ""))
 
@@ -139,9 +140,10 @@
 			       mode-line-buffer-identification
 			       "  SeqID:" '(:eval (aref sequed-seqID (- (string-to-number (format-mode-line "%l")) 1)))
 			       " BasePos:" '(:eval (if (>  (- (current-column) (- sequed-label-length 1)) 0)
-						       (number-to-string (- (string-to-number
-									     (format-mode-line "%c"))
-									    (- sequed-label-length 1)))))
+						       (number-to-string (+ (- (string-to-number
+										(format-mode-line "%c"))
+									       (- sequed-label-length 1))
+									    (- sequed-startpos 1)))))
 			       "   "
 			       mode-line-modes mode-line-misc-info mode-line-end-spaces)))
 
@@ -161,13 +163,38 @@
 (defvar-local sequed-seq-length nil)
 (defvar-local sequed-noseqs nil)
 (defvar-local sequed-seqID nil)
+(defvar-local sequed-startpos nil)
+(defvar-local sequed-endpos nil)
+
+
+(defun sequed-get-sequence-length ()
+  "Get length of first sequence."
+  (let (f-buffer f-lines f-linenum f-concatlines (oldbuf (current-buffer)))
+  (with-temp-buffer
+    (insert-buffer-substring oldbuf)
+    (setq-local comment-start "; ")
+    (setq-local comment-end "")
+    (sequed-remove-fasta-comments)
+    (setq f-buffer (buffer-substring-no-properties (point-min) (point-max))))
+    (setq f-lines (split-string
+		   f-buffer ">\\([[:word:]\-/|_.]+\\)\\([\s]+.*\n\\)?" t))
+    (setq f-linenum 0) ; Counts the original file's line number being evaluated
+    (while (< f-linenum (length f-lines))
+      (push (mapconcat #'concat (split-string
+				 (nth f-linenum f-lines)
+				 "\n" t) "") f-concatlines)
+      (setq f-linenum (+ 1 f-linenum)))
+    (setq sequed-seq-length (length (car f-concatlines)))))
 
 ;; Create a read-only buffer with pretty alignment displayed
-(defun sequed-mkaln ()
+(defun sequed-mkaln (startpos endpos)
   "Create read-only buffer for alignment viewing."
-  (interactive)
+  (interactive
+   (let ((spos (read-number "Start Pos: " 1))
+	 (epos (read-number "End Pos: " sequed-seq-length)))
+     (list spos epos)))
   (if (eq (sequed-check-fasta) nil) (user-error "Not a fasta file"))
-  (let (f-buffer f-lines f-seqcount f-linenum f-labels f-pos f-concatlines
+  (let (f-buffer f-lines f-seqcount f-linenum f-labels f-pos f-concatlines f-trimmed
 		 elabels (buf (get-buffer-create "*Alignment Viewer*")) text
 		 (inhibit-read-only t) (oldbuf (current-buffer)))
     (with-temp-buffer
@@ -194,12 +221,15 @@
 				 "\n" t) "") f-concatlines)
       (setq f-linenum (+ 1 f-linenum)))
     (setq elabels (sequed-labels-equal-length f-labels))
-
+    (setq f-linenum 0)
+    (while (< f-linenum (length f-concatlines))
+      (push (substring (nth f-linenum f-concatlines) (- startpos 1) endpos) f-trimmed)
+      (setq f-linenum (+ 1 f-linenum)))
     (setq f-linenum 0) ; Counts the original file's line number being evaluated
     (while (< f-linenum (length f-lines))
       (push (concat
 	     (nth f-linenum elabels)
-	     (nth f-linenum f-concatlines))
+	     (nth f-linenum f-trimmed))
 	    text)
       (setq f-linenum (+ 1 f-linenum)))
     (with-current-buffer buf
@@ -209,6 +239,8 @@
       (setq sequed-seq-length (length (car f-concatlines)))
       (setq sequed-noseqs (length elabels))
       (setq sequed-seqID (sequed-short-labels f-labels))
+      (setq sequed-startpos startpos)
+      (setq sequed-endpos endpos)
       (setq truncate-lines t)
       (setq f-linenum 0) ; Counts the original file's line number being evaluated
     (while (< f-linenum (length f-lines))
@@ -221,11 +253,11 @@
 (defun sequed-aln-gotobase (position)
   "Move to base at POSITION in sequence that cursor is positioned in."
   (interactive "nPosition of base: ")
-  (if (or (< position 1)
-	  (> position sequed-seq-length))
+  (if (or (< position sequed-startpos)
+	  (> position sequed-endpos))
       (user-error "Attempt to move to base outside sequence"))
   (beginning-of-line)
-  (move-to-column (+ position (- sequed-label-length 1))))
+  (move-to-column (- (+ position (- sequed-label-length 1)) (- sequed-startpos 1))))
 
 (defun sequed-aln-seqfeatures ()
   "List number of sequences and length of region."
