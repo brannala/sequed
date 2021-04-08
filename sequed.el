@@ -38,6 +38,7 @@
 ;;; Code:
 
 (require 'subr-x)
+(require 'seq)
 
 ;;;###autoload
 (add-to-list 'auto-mode-alist '("\\.\\(?:fa\\|aln\\)\\'" . sequed-mode))
@@ -90,6 +91,7 @@
     ;; assign sequed-mode commands to keys
     (define-key km (kbd "C-c C-a") 'sequed-mkaln)
     (define-key km (kbd "C-c C-e") 'sequed-export)
+    (define-key km (kbd "C-c C-r c") 'sequed-reverse-complement)
     (define-key km [menu-bar sequed]
       (cons "SequEd" (make-sparse-keymap "SequEd")))
     ;; assign sequed-mode commands to menu
@@ -99,6 +101,9 @@
     (define-key km
       [menu-bar sequed sequed-export]
       '("Export" . sequed-export))
+    (define-key km
+      [menu-bar sequed sequed-reverse-complement]
+      '("Reverse Complement" . sequed-reverse-complement))
     km)
   "Keymap used in Sequed mode.")
       
@@ -306,6 +311,35 @@
 	(delete-char 1))
       (fundamental-mode)
       (display-buffer( current-buffer)))))
+
+(defvar sequed-revb)
+
+(defun sequed-basepair (base)
+  "Find the complement of a DNA base"
+  (let ((case-fold-search nil))
+    (cond
+     ((char-equal ?a base) ?t)
+     ((char-equal ?t base) ?a)
+     ((char-equal ?c base) ?g)
+     ((char-equal ?g base) ?c)
+     ((char-equal ?A base) ?T)
+     ((char-equal ?T base) ?A)
+     ((char-equal ?C base) ?G)
+     ((char-equal ?G base) ?C)
+     (t base))))
+
+(defun sequed-reverse-complement (seqbegin seqend)
+  "Get reverse-complement of marked region seqbegin seqend in new buffer."
+  (interactive "r")
+  (let (revcmp)
+    (setq revcmp (reverse (concat (seq-map #'sequed-basepair (buffer-substring-no-properties seqbegin seqend)))))
+    (setq sequed-revb (generate-new-buffer "*reverse complement*"))
+    (print revcmp sequed-revb)
+    (switch-to-buffer sequed-revb)))
+
+
+
+
 
 ;; Pad labels to equal length to allow viewing of alignments
 (defun sequed-labels-equal-length (labels)
