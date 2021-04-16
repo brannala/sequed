@@ -74,9 +74,10 @@ to the mini-buffer.
 *** Moving the cursor to specific base positions
 In =sequed-aln-mode= the absolute position of the current
 base (cursor position) and the name of the sequence that the cursor is positioned in are
-both displayed in the mode line at the bottom of the screen. The command =C-c C-b= is used to specify a base position (absolute position in the orginal sequences) to move the cursor to. So, if you are
-viewing the region from 1500 to 2000 valid arguments for base position are between 1500 and 2000.
-You will receive a "base outside of region" error message if in this case you specifed for example position 500.
+both displayed in the mode line at the bottom of the screen. The command =C-c C-b= is used to specify a base position (absolute position in the original sequence alignment) to move the cursor to. As an example, if you are currently
+viewing a region containing bases 1500 to 2000 of the original alignment, valid arguments for the target base position 
+of a cursor move are between 1500 and 2000.
+You will receive a "base outside of region" error message if, in the above example you specified say target position 500.
 Global Emacs key sequences such as =C-f= and =C-b= can also be used to move the cursor along the sequence.
 The cursor is moved between sequences using the global Emacs key sequences =C-n= and =C-p= (or the
 Up/Down arrow keys). 
