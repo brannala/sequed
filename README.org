@@ -48,10 +48,22 @@ key combination =C-c C-a= or =M-x sequed-mkaln=. You will be prompted for the fi
 and last position (base) of the region to be displayed. Emacs can be slow displaying files
 with long lines so it is recommended that you view regions of about 1kb or less at one time.
 It is quick and easy to open a new display to look at other regions of a long sequence
-using the commands outline above. In =sequed-aln-mode= the absolute position of the current
+using the commands outline above. The new buffer will have major mode =sequed-aln-mode=.
+The key combination =C-c C-f= or the command =M-x sequed-aln-seqfeatures= causes the
+"sequence features" of the alignment (number of sequences, number of sites per sequence) to be printed
+to the mini-buffer. 
+
+*** Moving the cursor to specific base positions
+In =sequed-aln-mode= the absolute position of the current
 base (cursor position) and the name of the sequence that the cursor is positioned in are
 both displayed in the mode line at the bottom of the screen. The command =C-c C-b= is used to specify a base position (absolute position in the orginal sequences) to move the cursor to. So, if you are
 viewing the region from 1500 to 2000 valid arguments for base position are between 1500 and 2000.
 You will receive a "base outside of region" error message if in this case you specifed for example position 500.
+Global Emacs key sequences such as =C-f= and =C-b= can also be used to move the cursor along the sequence.
+The cursor is moved between sequences using the global Emacs key sequences =C-n= and =C-p= (or the
+Up/Down arrow keys). 
 
-The new buffer will have major mode =sequed-aln-mode==.
+*** Quitting the Alignment View
+You can close the alignment viewing buffer using either the key combination =C-c C-k=
+or the command =M-x sequed-aln-kill-alignment=.  
+
