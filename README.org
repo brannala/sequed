@@ -11,12 +11,19 @@ The =sequed= package provides some basic functionality for editing, viewing and 
 
 ** Installation
 
-=org-journal= is available through [[http://melpa.milkbox.net/][melpa]] making installation using the Emacs package manager very simple.
+=sequed= is available through [[http://melpa.milkbox.net/][melpa]] making installation using the Emacs package manager very simple.
 First, add melpa to your list of package archives by following these [[https://melpa.org/#/getting-started][melpa how-to-install instructions]]. Once this is done the installation is trivial:
 
 #+BEGIN_EXAMPLE
     M-x package-install sequed
 #+END_EXAMPLE
 
-Then add =(require 'org-journal)= to your =.emacs=.
+Then add =(require 'sequed)= to your =~/.emacs= or =~/.emacs.d/init.el=. If you use the =use-package= system for managing your
+Emacs packages then simply add the following to your =.emacs= or =~/.emacs.d/init.el=:
 
+#+BEGIN_EXAMPLE
+(use-package sequed
+  :ensure t)
+#+END_EXAMPLE
+
+** Quickstart
