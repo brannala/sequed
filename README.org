@@ -33,11 +33,17 @@ After installing sequed and restarting Emacs, sequed-mode automatically becomes 
     M-x sequed-mode
 #+END_EXAMPLE
 
+Note that =sequed= currently only reads sequence files that are in fasta format. It will print an error message if the file does not seem to be a fasta file.
 ** Manipulating DNA Sequences in Sequed Mode
 
-*** Moving around and selecting text
+*** Moving around and selecting sequences
+All the usual global Emacs key combinations can be used to traverse and edit sequences in =sequed-mode=. Be careful not to introduce changes to the data that violate the fasta format as this may cause unexpected
+results/errors. Future changes to the program will include special commands for moving between sequences, selecting sequences, etc. Stay tuned.
 
 *** Sequence transformations
+**** Reverse complement of a DNA sequence
+**** Translation of a DNA sequence
+
 
 *** Exporting sequences in other formats
 
