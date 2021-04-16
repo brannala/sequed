@@ -27,3 +27,19 @@ Emacs packages then simply add the following to your =.emacs= or =~/.emacs.d/ini
 #+END_EXAMPLE
 
 ** Quickstart
+After installing sequed and restarting Emacs, sequed-mode automatically becomes the major mode for files with .fa or .aln endings. You can manually invoke the sequed-mode major mode with
+
+#+BEGIN_EXAMPLE
+    M-x sequed-mode
+#+END_EXAMPLE
+
+** Sequed Mode Basic Usage
+
+
+*** Moving around and selecting text
+
+*** Sequence transformations
+
+*** Exporting sequences in other formats
+
+** Sequed-Aln Alignment Viewing
