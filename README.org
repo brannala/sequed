@@ -43,7 +43,7 @@ results/errors. Future changes to the program will include special commands for 
 *** Sequence transformations
 Some common Bioinformatics operations on DNA sequences are available in =sequed-mode=. The transformations
 operate in the same basic manner: the original sequence buffer remains unchanged and a new buffer is
-created that contains the result which can then be saved to file or further edited/mofified.
+created that contains the result which can then be saved to file or further edited/modified.
 The region of sequence to be transformed must first be selected using the standard Emacs method for selecting a region of text. The sequence transformation command is then invoked.  
 **** Reverse complement of a DNA sequence
 To obtain the reverse complement of a selected region of DNA, first select the region of the sequence 
