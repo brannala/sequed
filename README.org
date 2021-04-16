@@ -1,4 +1,5 @@
 [[https://melpa.org/#/sequed][file:https://melpa.org/packages/sequed-badge.svg]]
+[[./sequed-aln-mode.png]]
 
 * sequed
  
