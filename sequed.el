@@ -200,7 +200,9 @@
 
 ;; Create a read-only buffer with pretty alignment displayed
 (defun sequed-mkaln (startpos endpos)
-  "Create read-only buffer for alignment viewing."
+  "Create read-only buffer for alignment viewing.
+Argument STARTPOS First nucleotide position in alignment to display.
+Argument ENDPOS Last nucleotide position in alignment to display."
   (interactive
    (let ((spos (read-number "Start Pos: " 1))
 	 (epos (read-number "End Pos: " sequed-seq-length)))
@@ -263,8 +265,7 @@
     (display-buffer buf))
   (other-window 1)
   (goto-char(point-min))
-  (sequed-aln-gotobase sequed-startpos)
-  )
+  (sequed-aln-gotobase sequed-startpos))
 
 (defun sequed-aln-gotobase (position)
   "Move to base at POSITION in sequence that cursor is positioned in."
@@ -408,7 +409,7 @@
 (defvar sequed-revb)
 
 (defun sequed-basepair (base)
-  "Find the complement of a DNA base"
+  "Find the complement of a DNA BASE."
   (let ((case-fold-search nil))
     (cond
      ((char-equal ?a base) ?t)
@@ -422,17 +423,13 @@
      (t base))))
 
 (defun sequed-reverse-complement (seqbegin seqend)
-  "Get reverse-complement of marked region seqbegin seqend in new buffer."
+  "Get reverse-complement of marked region SEQBEGIN SEQEND in new buffer."
   (interactive "r")
   (let (revcmp)
     (setq revcmp (reverse (concat (seq-map #'sequed-basepair (buffer-substring-no-properties seqbegin seqend)))))
     (setq sequed-revb (generate-new-buffer "*reverse complement*"))
     (print revcmp sequed-revb)
     (switch-to-buffer sequed-revb)))
-
-
-
-
 
 ;; Pad labels to equal length to allow viewing of alignments
 (defun sequed-labels-equal-length (labels)
