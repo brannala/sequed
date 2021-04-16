@@ -41,11 +41,22 @@ All the usual global Emacs key combinations can be used to traverse and edit seq
 results/errors. Future changes to the program will include special commands for moving between sequences, selecting sequences, etc. Stay tuned.
 
 *** Sequence transformations
+Some common Bioinformatics operations on DNA sequences are available in =sequed-mode=. The transformations
+operate in the same basic manner: the original sequence buffer remains unchanged and a new buffer is
+created that contains the result which can then be saved to file or further edited/mofified.
+The region of sequence to be transformed must first be selected using the standard Emacs method for selecting a region of text. The sequence transformation command is then invoked.  
 **** Reverse complement of a DNA sequence
+To obtain the reverse complement of a selected region of DNA, first select the region of the sequence 
+and then invoke either the key combination =C-c C-r c= or the command =M-x sequed-reverse-complement=
 **** Translation of a DNA sequence
-
+To translate the coding strand of a selected region of DNA into an amino acid sequence, first select the region of the sequence and then invoke either the key combination =C-c C-r t= or the command =M-x sequed-translate=. Currently,
+the universal genetic code is the only one available but additional genetic codes will be available by setting a variable in future =sequed= releases. Note that the reading frame is determined by the position of the first base that is chosen in the selected region. For example, choosing base number 1 + 3n (for n = 0,1,2,...), specifies the first reading frame, 
+2 + 3n the second reading frame, and 3 + 3n the third reading frame. A stop codon is indicated in the translation by *. 
 
 *** Exporting sequences in other formats
+Although only fasta format files can be read by the program it is possible to export alignments in other formats.
+Currently, the only sequence export format available is for the [[https://github.com/bpp/bpp][BPP phylogenetics program]]. To export the current
+buffer in bpp format use the command =M-x sequed-export=.
 
 ** Viewing DNA Alignments in Sequed-Aln Mode 
 When visiting a buffer in =sequed-mode= that contains a valid sequence alignment you
