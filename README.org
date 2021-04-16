@@ -1,0 +1,8 @@
+[[https://melpa.org/#/sequed][file:https://melpa.org/packages/sequed-badge.svg]]
+
+* sequed
+ 
+An major mode for editing, viewing and transforming DNA sequence alignments in GNU Emacs.
+
+** Overview 
+The =sequed= package provides some basic functionality for editing, viewing and manipulating DNA sequence data in Emacs. In =sequed-mode= commands are available for navigating and editing DNA sequences in fasta file format, as well as other common Bioinformatics tasks such as creating reverse-complements, translating selected regions into amino acid sequences, etc. In =sequed-aln-mode= commands are available for pretty viewing (and navigating) of fasta format alignments of multiple sequences, possibly reducing the view to specific subregions. To use =sequed= you should be familiar with DNA biology and basic Emacs commands.       
