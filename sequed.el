@@ -427,10 +427,11 @@ Argument ENDPOS Last nucleotide position in alignment to display."
 (defun sequed-reverse-complement (seqbegin seqend)
   "Get reverse-complement of marked region SEQBEGIN SEQEND in new buffer."
   (interactive "r")
-  (let (revcmp)
+  (let (revcmp x)
     (setq revcmp (reverse (concat (seq-map #'sequed-basepair (buffer-substring-no-properties seqbegin seqend)))))
+    (setq x (replace-regexp-in-string "[\s]*\n" "" revcmp))
     (setq sequed-revb (generate-new-buffer "*reverse complement*"))
-    (print revcmp sequed-revb)
+    (print x sequed-revb)
     (switch-to-buffer sequed-revb)))
 
 ;; Pad labels to equal length to allow viewing of alignments
