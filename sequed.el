@@ -395,7 +395,6 @@ Argument ENDPOS Last nucleotide position in alignment to display."
   (interactive "r")
   (let (z y x (i 0) (j 0) codon)
     (setq x (replace-regexp-in-string "[\s]*\n" "" (buffer-substring-no-properties seqbegin seqend)))
-    (print x)
     (setq y (make-vector (/ (length x) 3) ?.))
     (while (< i (- (length x) 2))
       (setq codon (substring x i (+ i 3)))
