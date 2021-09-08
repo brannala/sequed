@@ -242,6 +242,7 @@ Argument ENDPOS Last nucleotide position in alignment to display."
     (while (< f-linenum (length f-concatlines))
       (push (substring (nth f-linenum f-concatlines) (- startpos 1) endpos) f-trimmed)
       (setq f-linenum (+ 1 f-linenum)))
+    (setq f-trimmed (reverse f-trimmed)) ; restore correct order of sequences
     (setq f-linenum 0) ; Counts the original file's line number being evaluated
     (while (< f-linenum (length f-lines))
       (push (concat
