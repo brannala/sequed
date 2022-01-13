@@ -2,7 +2,7 @@
 
 ;; Copyright (C) 2020-2021 Bruce Rannala
 
-;; Author: Bruce Rannala <brannala@ucdavis.edu
+;; Author: Bruce Rannala <brannala@ucdavis.edu>
 ;; URL: https://github.com/brannala/sequed
 ;; Version: 1.00
 ;; Package-Requires: ((emacs "25.2"))
@@ -113,7 +113,7 @@
       '("Translation" . sequed-translate))
     km)
   "Keymap used in Sequed mode.")
-      
+
 
 ;;;###autoload
 (define-derived-mode sequed-mode fundamental-mode "SequEd"
