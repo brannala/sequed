@@ -459,10 +459,12 @@ Argument ENDPOS Last nucleotide position in alignment to display."
 ;; Get short labels for display on mode line
 (defun sequed-short-labels (labels)
   "Create short LABELS for display in mode line."
-  (let* ((currline 0) seqID)
+  (let* ((currline 0) seqID  smallSize)
+    (setq smallSize (length (nth 1 labels)))
+    (if (> smallSize 11) (setq smallSize 11))
     (setq seqID (make-vector(length labels) "Empty"))
     (while (< currline (length labels))
-      (aset seqID currline (substring (nth currline labels) 1 11))
+      (aset seqID currline (substring (nth currline labels) 1 smallSize))
       (setq currline (+ 1 currline)))
     seqID))
 
