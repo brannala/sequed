@@ -11,7 +11,7 @@ The =sequed= package provides some basic functionality for editing, viewing and 
 
 ** Installation
 
-=sequed= is available through [[http://melpa.milkbox.net/][melpa]] making installation using the Emacs package manager very simple.
+=sequed= is available through [[http://melpa.org/][melpa]] making installation using the Emacs package manager very simple.
 First, add melpa to your list of package archives by following these [[https://melpa.org/#/getting-started][melpa how-to-install instructions]]. Once this is done the installation is trivial:
 
 #+BEGIN_EXAMPLE
